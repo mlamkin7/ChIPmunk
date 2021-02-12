@@ -33,9 +33,9 @@ rule learn_from_results:
         "params/" + config["OUTPREFIX"] + "_simlearn-numreads{numreads,\d+}.json"
     run:
         if config["LAYOUT"] == 'single':
-            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} && touch {output}")
+            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} --thres 0 && touch {output}")
         else:
-            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} --paired && touch {output}")
+            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} --thres 0 --paired && touch {output}")
 
 #rule summarize_all:
 #    input:
