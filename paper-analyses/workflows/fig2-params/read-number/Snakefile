@@ -18,7 +18,7 @@ NUMREADS = [1000, 10000, 100000, 1000000]
 rule all:
     input:
         "{outprefix}.summary_stats_readnum.tab".format(outprefix=config["OUTPREFIX"]),
-        expand("params/"+config["OUTPREFIX"]+"_simlearn-numreads{numreads}.params", numreads=NUMREADS)
+        expand("params/"+config["OUTPREFIX"]+"_simlearn-numreads{numreads}.json", numreads=NUMREADS)
 
 rule create_params_file:
     output:
@@ -30,7 +30,7 @@ rule learn_from_results:
     input:
         expand("bams/"+config["OUTPREFIX"]+"-numreads{numreads}.flagged.bam", numreads=NUMREADS)
     output:
-        "params/" + config["OUTPREFIX"] + "_simlearn-numreads{numreads,\d+}.params"
+        "params/" + config["OUTPREFIX"] + "_simlearn-numreads{numreads,\d+}.json"
     run:
         if config["LAYOUT"] == 'single':
             shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} && touch {output}")
