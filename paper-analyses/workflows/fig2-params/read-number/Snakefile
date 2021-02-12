@@ -13,12 +13,12 @@ config["C"] = 4
 
 include: "/storage/mlamkin/workspace/chips/paper-analyses/workflows/Snakefile"
 
-NUMREADS = [100, 1000, 10000, 100000, 1000000]
+NUMREADS = [1000, 10000, 100000, 1000000]
 
 rule all:
     input:
         "{outprefix}.summary_stats_readnum.tab".format(outprefix=config["OUTPREFIX"]),
-        "params/" + config["OUTPREFIX"] + "_simlearn-numreads{numreads,\d+}.params"
+        expand("params/"+config["OUTPREFIX"]+"_simlearn-numreads{numreads}.params", numreads=NUMREADS)
 
 rule create_params_file:
     output:
@@ -28,14 +28,14 @@ rule create_params_file:
 
 rule learn_from_results:
     input:
-        "bams/{sample}.flagged.bam",
+        expand("bams/"+config["OUTPREFIX"]+"-numreads{numreads}.flagged.bam", numreads=NUMREADS)
     output:
         "params/" + config["OUTPREFIX"] + "_simlearn-numreads{numreads,\d+}.params"
     run:
         if config["LAYOUT"] == 'single':
-            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -b {input} -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} && touch {output[0]}")
+            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} && touch {output}")
         else:
-            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -b {input} -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} --paired && touch {output[0]}")
+            shell("/storage/mlamkin/workspace/chips/build/chips learn -p {PEAKFILE} -t bed -c {config[C]} -b bams/"+config["OUTPREFIX"]+"-numreads{wildcards.numreads}.flagged.bam -o params/" + config["OUTPREFIX"] + "_simlearn-numreads{wildcards.numreads} --paired && touch {output}")
 
 #rule summarize_all:
 #    input:
@@ -56,3 +56,6 @@ rule summarize_all:
        shell("head -n 1 {input[0]} | awk '{{print \"numreads\\t\" $0}}' >> {output}")
        for nr in NUMREADS:
            shell("tail -n 1 metrics/{config[OUTPREFIX]}-numreads%s.final.tab | awk '{{print \"%s\\t\" $0}}' >> {output}"%(nr, nr))
+
+
+
