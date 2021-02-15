@@ -4,11 +4,28 @@ ChIPs is a tool for simulating ChIP-sequencing experiments.
 
 For questions on installation or usage, please open an issue, submit a pull request, or contact An Zheng (anz023@eng.ucsd.edu).
 
-[Download](#download) | [Install](#install) | [Basic Usage](#usage) | [Detailed usage](#detailed) | [File formats](#formats) | [FAQ](#faq)
+[Download](#download) | [Basic Usage](#usage) | [Detailed usage](#detailed) | [File formats](#formats) | [FAQ](#faq)
 
 <a name="download"></a>
-## Download
+## 1. Download
 
+### Through Anaconda
+The lastest ChIPs release is avaiable in the `bioconda` channel of Anaconda.
+
+If you don't have Anaconda or Miniconda installed on your machine, you can follow the installation instructions provided in the link below:\
+http://bioconda.github.io/user/install.html#install-packages
+
+After installing conda, you will need to add the bioconda channel as well as the other channels bioconda depends on. 
+```
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+```
+
+Once bioconda is enabled, you can download ChIPs using: `conda install chips`.
+
+
+### From Github
 The latest ChIPs release is available on the [releases page](https://github.com/gymreklab/chips/releases).
 
 <a name="install"></a>
@@ -24,6 +41,7 @@ cmake ..
 make
 ```
 
+### From source files
 To compile from source on the [releases page](https://github.com/gymreklab/chips/releases/tag/v2.2), download the file chips-2.2-Source.tar.gz and run:
 
 ```
@@ -41,7 +59,7 @@ There is also a precompiled binary available on the [release page](https://githu
 
 
 <a name="usage"></a>
-## Basic usage
+## 2. Basic usage
 
 ChIPs is a single command line tool that contains several modules. To see available modules type:
 
@@ -73,16 +91,18 @@ chips simreads \
 ```
 
 <a name="detailed"></a>
-## Detailed usage
+## 3. Detailed usage
 
 ### chips learn
 
 Required parameters:
-* `-b <file.bam>`: BAM file containing aligned reads. Should be sorted and indexed. To accurately estimate PCR duplicate rate, duplicates must be flagged e.g. using Picard. Both paired-end or single-end data are supported.
 * `-p <peaks>`: file containing peaks. 
 * `-t <homer|bed>`: Specify the format of the peaks file. Options are "bed" or "homer".
-* `-c <int>`: The index of the BED or homer peak file column used to score each peak (index starting from 1)
 * `-o <outprefix>`: Prefix to name output files. Outputs file `<outprefix>.json` with learned model parameters.
+
+Choose one: you need to specify either parameter -c or parameter -b. If both are provided, the BAM file will be used for scoring peaks.
+* `-b <file.bam>`: BAM file containing aligned reads. Should be sorted and indexed. To accurately estimate PCR duplicate rate, duplicates must be flagged e.g. using Picard. Both paired-end or single-end data are supported.
+* `-c <int>`: The index of the BED or homer peak file column used to score each peak (index starting from 1)
 
 Optional parameters for BAM parsing:
 * `--paired`: Data is paired
@@ -133,7 +153,7 @@ Other options:
 * `--del <float>`: Deletion error rate. Default: 0.
 
 <a name="formats"></a>
-## Formats
+## 4. Formats
 
 ### Peak files
 
@@ -164,7 +184,7 @@ Model files are in JSON syntax, and follow the example below.
 `chips learn` outputs a JSON model file. `chips simreads` can take in a model file with all or some of these parameters specified. Model parameters set on the command line override those set in the JSON model file. 
 
 <a name="faq"></a>
-## FAQ
+## 5. FAQ
 
 **Q**: What should I set the number of genome copies (`--numcopies`) parameter to for `simreads`?<br>
 **A**: This gives the number of simulation rounds to perform. This number is not directly comparable to the actual number of cells used in an experiment since we do not currently model pulldown inefficiency. We have found that for histone modifications performance starts to plateau after around 25 copies (`--numcopies 25`). For transcription factors we recommend setting `--numcopies 1000`. Note, run time increases linearly with the value set for this parameter.
