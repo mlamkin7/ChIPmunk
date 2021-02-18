@@ -18,18 +18,19 @@ for layout in single paired
 do
     for style in "TF" "HM"
     do
-	if [ x"$style" == x"TF" ]; then
-	    MODELFILE=$TFMODEL
-	    PEAKFILE=$TFPEAKS
-	fi
-	if [ x"$style" == x"HM" ]; then
-	    MODELFILE=$HMMODEL
-	    PEAKFILE=$HMPEAKS
-	fi
-	snakemake \
-	    --config MODELFILE=$MODELFILE \
-	    PEAKFILE=$PEAKFILE \
-	    OUTPREFIX=${style}-${layout} \
-	    LAYOUT=${layout} ${EXTRAARGS}
+    if [ x"$style" == x"TF" ]; then
+        MODELFILE=$TFMODEL
+        PEAKFILE=$TFPEAKS
+    fi
+    if [ x"$style" == x"HM" ]; then
+        MODELFILE=$HMMODEL
+        PEAKFILE=$HMPEAKS
+    fi
+    snakemake \
+        --config MODELFILE=$MODELFILE \
+        PEAKFILE=$PEAKFILE \
+        METHOD=chips \
+        OUTPREFIX=${style}-${layout}-${num} \
+        LAYOUT=${layout} ${EXTRAARGS}
     done
 done
