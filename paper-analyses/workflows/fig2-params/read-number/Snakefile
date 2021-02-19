@@ -24,7 +24,7 @@ rule create_params_file:
     output:
         "params/" + config["OUTPREFIX"] + "-numreads{numreads,\d+}.params"
     shell:
-        "echo --scale-outliers -c {config[C]} --numcopies 10000 --thread 4 --numreads {wildcards.numreads} --readlen 36 > {output}"
+        "echo --scale-outliers -c {config[C]} --numcopies 10000 --thread 4 --numreads {wildcards.numreads} --readlen 151 > {output}"
 
 rule learn_from_results:
     input:

@@ -30,7 +30,7 @@ do
         --config MODELFILE=$MODELFILE \
         PEAKFILE=$PEAKFILE \
         METHOD=chips \
-        OUTPREFIX=${style}-${layout}-${num} \
+        OUTPREFIX=${style}-${layout} \
         LAYOUT=${layout} ${EXTRAARGS}
     done
 done
